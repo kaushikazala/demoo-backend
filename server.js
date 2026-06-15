@@ -17,8 +17,29 @@ const PORT = process.env.PORT || 5000;
 // Connect to Database
 connectDB();
 
-// CORS configuration - allow all origins for development
-app.use(cors());
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  process.env.FRONTEND_URL_LOCAL,
+  process.env.FRONTEND_URL_PROD,
+].filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS policy violation'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 
 // Body parser
 app.use(express.json());
