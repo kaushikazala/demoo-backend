@@ -5,7 +5,6 @@ import connectDB from './config/db.js';
 import { responseFormatter, errorHandler } from './middlewares/responseFormatter.js';
 import authRoutes from './routes/authRoutes.js';
 import todoRoutes from './routes/todoRoutes.js';
-import { serveSwagger } from './config/swagger.js';
 
 // Load environment variables
 dotenv.config();
@@ -47,16 +46,13 @@ app.use(express.json());
 // Apply response formatter middleware globally
 app.use(responseFormatter);
 
-// Set up Swagger UI
-serveSwagger(app);
-
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/todos', todoRoutes);
 
-// Base route redirection to swagger docs
+// Base route
 app.get('/', (req, res) => {
-  res.redirect('/api-docs');
+  res.json({ message: 'Todo API is running', status: 'ok' });
 });
 
 // Handling 404 routes
@@ -71,5 +67,4 @@ app.use(errorHandler);
 // Start listening
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`Swagger documentation is available at http://localhost:${PORT}/api-docs`);
 });
